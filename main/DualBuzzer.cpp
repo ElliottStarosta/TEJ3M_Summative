@@ -29,7 +29,7 @@ DualBuzzer::DualBuzzer(int melodyBuzzerPin, int harmonyBuzzerPin) {
   wordCount = 0;
   currentWordIndex = 0;
   
-  // Initialize I2C LCD pointer to NULL
+  // Initialize I2C LCD to NULL
   lcd = NULL;
   lcdRows = 0;
   lcdCols = 0;
