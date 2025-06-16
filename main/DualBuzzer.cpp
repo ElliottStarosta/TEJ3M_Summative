@@ -1,14 +1,33 @@
+Javadoc) to the methods and important code sections. Here's the documented version:
+
+
+DualBuzzer.cpp - Documented
+Code 
+
+
+
+
+Continue
+
 #include "DualBuzzer.h"
 
+/**
+ * @brief Constructor for DualBuzzer class
+ * @param melodyBuzzerPin Pin number for the melody buzzer
+ * @param harmonyBuzzerPin Pin number for the harmony buzzer
+ * 
+ * Initializes all pins, variables, and default settings for the dual buzzer system.
+ * Sets up LED configuration with invalid pins (disabled by default).
+ */
 DualBuzzer::DualBuzzer(int melodyBuzzerPin, int harmonyBuzzerPin) {
   melodyPin = melodyBuzzerPin;
   harmonyPin = harmonyBuzzerPin;
   
-  // Initialize pins
+  // Initialize pins as outputs
   pinMode(melodyPin, OUTPUT);
   pinMode(harmonyPin, OUTPUT);
   
-  // Initialize variables
+  // Initialize note arrays and playback variables
   melodyNotes = NULL;
   harmonyNotes = NULL;
   melodyLength = 0;
@@ -23,17 +42,17 @@ DualBuzzer::DualBuzzer(int melodyBuzzerPin, int harmonyBuzzerPin) {
   melodyStartTime = 0;
   harmonyStartTime = 0;
   
-  // Initialize Lyrics NULL
+  // Initialize lyrics system
   lyrics = NULL;
   lyricsCount = 0;
   currentLyricIndex = 0;
   
-  // Initialize I2C LCD to NULL
+  // Initialize LCD display system
   lcd = NULL;
   lcdRows = 0;
   lcdCols = 0;
   
-  // Initialize LED system
+  // Initialize LED system with default settings
   ledEnabled = false;
   currentPattern = PATTERN_FREQUENCY_BANDS;
   lastLEDUpdate = 0;
@@ -48,12 +67,12 @@ DualBuzzer::DualBuzzer(int melodyBuzzerPin, int harmonyBuzzerPin) {
   noteChangeTime = 0;
   noteJustChanged = false;
 
-  // IDLE Mode
+  // Initialize idle mode variables
   lastIdleUpdate = 0;
   idleAnimationStep = 0;
   isIdleMode = false;
   
-  // Initialize LED config to invalid pins
+  // Initialize LED configuration with invalid pins (disabled)
   ledConfig.redPin = -1;
   ledConfig.bluePin = -1;
   ledConfig.greenPin = -1;
@@ -61,6 +80,17 @@ DualBuzzer::DualBuzzer(int melodyBuzzerPin, int harmonyBuzzerPin) {
   ledConfig.whitePin = -1;
 }
 
+/**
+ * @brief Configure LED pins for visual effects
+ * @param redPin Pin number for red LED (use -1 to disable)
+ * @param bluePin Pin number for blue LED (use -1 to disable)
+ * @param greenPin Pin number for green LED (use -1 to disable)
+ * @param yellowPin Pin number for yellow LED (use -1 to disable)
+ * @param whitePin Pin number for white LED (use -1 to disable)
+ * 
+ * Sets up the LED pins and enables the LED system. Only pins with valid
+ * numbers (>= 0) will be configured and used.
+ */
 void DualBuzzer::setupLEDs(int redPin, int bluePin, int greenPin, int yellowPin, int whitePin) {
   ledConfig.redPin = redPin;
   ledConfig.bluePin = bluePin;
@@ -68,7 +98,7 @@ void DualBuzzer::setupLEDs(int redPin, int bluePin, int greenPin, int yellowPin,
   ledConfig.yellowPin = yellowPin;
   ledConfig.whitePin = whitePin;
   
-  // Initialize LED pins
+  // Initialize LED pins as outputs (only for valid pins)
   if (redPin >= 0) pinMode(redPin, OUTPUT);
   if (bluePin >= 0) pinMode(bluePin, OUTPUT);
   if (greenPin >= 0) pinMode(greenPin, OUTPUT);
@@ -81,12 +111,22 @@ void DualBuzzer::setupLEDs(int redPin, int bluePin, int greenPin, int yellowPin,
   ledEnabled = true;
 }
 
+/**
+ * @brief Set the LED animation pattern
+ * @param pattern The LED pattern to use (see LEDPattern enum)
+ * 
+ * Changes the LED animation pattern and resets animation counters.
+ */
 void DualBuzzer::setLEDPattern(LEDPattern pattern) {
   currentPattern = pattern;
   patternStep = 0;
   beatCounter = 0;
 }
 
+/**
+ * @brief Enable or disable LED effects
+ * @param enable True to enable LEDs, false to disable and turn off all LEDs
+ */
 void DualBuzzer::enableLEDs(bool enable) {
   ledEnabled = enable;
   if (!enable) {
@@ -94,18 +134,38 @@ void DualBuzzer::enableLEDs(bool enable) {
   }
 }
 
+/**
+ * @brief Set the melody note sequence
+ * @param notes Pointer to array of Note structures (should be in PROGMEM)
+ * @param length Number of notes in the melody
+ */
 void DualBuzzer::setMelody(Note* notes, int length) {
   melodyNotes = notes;
   melodyLength = length;
   melodyIndex = 0;
 }
 
+/**
+ * @brief Set the harmony note sequence
+ * @param notes Pointer to array of Note structures (should be in PROGMEM)
+ * @param length Number of notes in the harmony
+ */
 void DualBuzzer::setHarmony(Note* notes, int length) {
   harmonyNotes = notes;
   harmonyLength = length;
   harmonyIndex = 0;
 }
 
+/**
+ * @brief Set both melody and harmony for a complete song
+ * @param melody Pointer to melody note array
+ * @param melodyLen Length of melody array
+ * @param harmony Pointer to harmony note array
+ * @param harmonyLen Length of harmony array
+ * 
+ * Stops current playback and configures a new song with both melody and harmony.
+ * Resets lyrics position and LED effects.
+ */
 void DualBuzzer::setSong(Note* melody, int melodyLen, Note* harmony, int harmonyLen) {
   // Stop current playback if any
   stop();
@@ -120,22 +180,39 @@ void DualBuzzer::setSong(Note* melody, int melodyLen, Note* harmony, int harmony
   // Reset LED effects
   patternStep = 0;
   beatCounter = 0;
-
 }
 
+/**
+ * @brief Set lyrics timing for synchronized display
+ * @param timings Array of LyricTiming structures
+ * @param count Number of lyric entries
+ * 
+ * Configures lyrics that will be displayed in sync with the melody.
+ */
 void DualBuzzer::setLyrics(LyricTiming* timings, int count) {
   lyrics = timings;
   lyricsCount = count;
   currentLyricIndex = 0;
 }
 
-
+/**
+ * @brief Configure LCD display for lyrics
+ * @param display Pointer to LiquidCrystal_I2C display object
+ * @param rows Number of rows on the display
+ * @param columns Number of columns on the display
+ */
 void DualBuzzer::setLCD(LiquidCrystal_I2C* display, int rows, int columns) {
   lcd = display;
   lcdRows = rows;
   lcdCols = columns;
 }
 
+/**
+ * @brief Start playing both melody and harmony
+ * 
+ * Begins playback of the configured song, resets lyrics display,
+ * and shows the first lyric if available.
+ */
 void DualBuzzer::play() {
   playMelody();
   playHarmony();
@@ -146,6 +223,11 @@ void DualBuzzer::play() {
   updateLyrics();
 }
 
+/**
+ * @brief Start playing the melody only
+ * 
+ * Begins melody playback from the first note and starts the first tone.
+ */
 void DualBuzzer::playMelody() {
   if (melodyNotes != NULL && melodyLength > 0) {
     melodyPlaying = true;
@@ -155,13 +237,17 @@ void DualBuzzer::playMelody() {
     // Start playing the first note
     if (melodyNotes[0].frequency > 0) {
       tone(melodyPin, melodyNotes[0].frequency);
-      
     } else {
-      noTone(melodyPin);
+      noTone(melodyPin); // Rest note
     }
   }
 }
 
+/**
+ * @brief Start playing the harmony only
+ * 
+ * Begins harmony playback from the first note and starts the first tone.
+ */
 void DualBuzzer::playHarmony() {
   if (harmonyNotes != NULL && harmonyLength > 0) {
     harmonyPlaying = true;
@@ -172,11 +258,17 @@ void DualBuzzer::playHarmony() {
     if (harmonyNotes[0].frequency > 0) {
       tone(harmonyPin, harmonyNotes[0].frequency);
     } else {
-      noTone(harmonyPin);
+      noTone(harmonyPin); // Rest note
     }
   }
 }
 
+/**
+ * @brief Stop all playback and effects
+ * 
+ * Stops both melody and harmony, clears lyrics display, starts idle mode,
+ * and turns off all LEDs.
+ */
 void DualBuzzer::stop() {
   stopMelody();
   stopHarmony();
@@ -189,22 +281,35 @@ void DualBuzzer::stop() {
   }
 }
 
+/**
+ * @brief Stop melody playback only
+ */
 void DualBuzzer::stopMelody() {
   melodyPlaying = false;
   noTone(melodyPin);
 }
 
+/**
+ * @brief Stop harmony playback only
+ */
 void DualBuzzer::stopHarmony() {
   harmonyPlaying = false;
   noTone(harmonyPin);
 }
 
+/**
+ * @brief Main update function - call this in your main loop
+ * 
+ * Handles note timing, advances playback, updates lyrics display,
+ * manages idle mode, and updates LED effects. This must be called
+ * frequently for proper operation.
+ */
 void DualBuzzer::update() {
   unsigned long currentTime = millis();
   
-  // Update melody
+  // Update melody playback
   if (melodyPlaying && melodyNotes != NULL) {
-    // Read note from PROGMEM
+    // Read current note from PROGMEM
     Note currentNote;
     memcpy_P(&currentNote, &melodyNotes[melodyIndex], sizeof(Note));
     
@@ -212,7 +317,6 @@ void DualBuzzer::update() {
     if (currentTime - melodyStartTime >= currentNote.duration) {
       melodyIndex++;
       beatCounter++; // Increment beat counter for LED effects
-      
       
       // Check if we've reached the end of the melody
       if (melodyIndex >= melodyLength) {
@@ -228,17 +332,16 @@ void DualBuzzer::update() {
         if (nextNote.frequency > 0) {
           tone(melodyPin, nextNote.frequency);
         } else {
-          noTone(melodyPin);
+          noTone(melodyPin); // Rest note
         }
         
         // Update lyrics display for the new note
         updateLyrics();
       }
     }
-
   }
   
-  // Update harmony (similar fix)
+  // Update harmony playback (similar to melody)
   if (harmonyPlaying && harmonyNotes != NULL) {
     Note currentNote;
     memcpy_P(&currentNote, &harmonyNotes[harmonyIndex], sizeof(Note));
@@ -257,28 +360,38 @@ void DualBuzzer::update() {
         if (nextNote.frequency > 0) {
           tone(harmonyPin, nextNote.frequency);
         } else {
-          noTone(harmonyPin);
+          noTone(harmonyPin); // Rest note
         }
       }
     }
   }
-  // Check if Idle
+  
+  // Handle idle mode display when not playing
   if (isIdleMode && !isPlaying()) {
       showIdleLCD();
   }
   
-  // Update LEDs
+  // Update LED effects at specified intervals
   if (ledEnabled && currentTime - lastLEDUpdate >= ledUpdateInterval) {
     updateLEDs();
     lastLEDUpdate = currentTime;
   }
 }
 
-
+/**
+ * @brief Check if any audio is currently playing
+ * @return True if melody or harmony is playing, false otherwise
+ */
 bool DualBuzzer::isPlaying() {
   return melodyPlaying || harmonyPlaying;
 }
 
+/**
+ * @brief Update lyrics display based on current melody position
+ * 
+ * Finds the appropriate lyric for the current note and updates
+ * the sliding lyrics display.
+ */
 void DualBuzzer::updateLyrics() {
     if (lcd == NULL || lyrics == NULL || !melodyPlaying) return;
     
@@ -296,6 +409,12 @@ void DualBuzzer::updateLyrics() {
     updateSlidingLyrics();
 }
 
+/**
+ * @brief Update the sliding lyrics display with animation
+ * 
+ * Creates a scrolling text effect that centers the current word
+ * and adds animated dots below it to indicate the active lyric.
+ */
 void DualBuzzer::updateSlidingLyrics() {
     if (lcd == NULL || lyrics == NULL) return;
     
@@ -321,7 +440,7 @@ void DualBuzzer::updateSlidingLyrics() {
         wordIndex++;
     }
     
-    // Calculate display window
+    // Calculate display window to center current word
     int displayStart = 0;
     int currentWordLength = currentWordEnd - currentWordStart + 1;
     
@@ -335,10 +454,8 @@ void DualBuzzer::updateSlidingLyrics() {
         displayStart = max(0, (int)fullText.length() - lcdCols);
     }
     
-    // Extract display text
+    // Extract display text and pad with spaces
     String displayText = fullText.substring(displayStart, min(displayStart + lcdCols, (int)fullText.length()));
-    
-    // Pad with spaces if needed
     while (displayText.length() < lcdCols) {
         displayText += " ";
     }
@@ -348,7 +465,7 @@ void DualBuzzer::updateSlidingLyrics() {
     lcd->setCursor(0, 0);
     lcd->print(displayText);
     
-    // Create animated dots on bottom row
+    // Create animated dots on bottom row to highlight current word
     String dotLine = "";
     for (int i = 0; i < lcdCols; i++) {
         dotLine += " ";
@@ -366,7 +483,7 @@ void DualBuzzer::updateSlidingLyrics() {
         for (int i = 0; i < dotCount; i++) {
             int dotPos = wordStartInDisplay + (i * dotSpacing);
             if (dotPos >= 0 && dotPos < lcdCols) {
-                // Animate dots with different characters
+                // Animate dots with different characters for visual effect
                 char dotChar = '.';
                 int animPhase = (millis() / 200 + i) % 4;
                 switch (animPhase) {
@@ -380,19 +497,25 @@ void DualBuzzer::updateSlidingLyrics() {
         }
     }
     
-    // Display dots on bottom row
+    // Display animated dots on bottom row
     lcd->setCursor(0, 1);
     lcd->print(dotLine);
 }
 
-
+/**
+ * @brief Clear the lyrics display
+ */
 void DualBuzzer::clearLyrics() {
   if (lcd != NULL) {
     lcd->clear();
   }
 }
 
-// LED Control Functions
+/**
+ * @brief Update LED effects based on current pattern
+ * 
+ * Calls the appropriate LED pattern function and manages animation timing.
+ */
 void DualBuzzer::updateLEDs() {
   if (!ledEnabled) return;
   
@@ -421,6 +544,16 @@ void DualBuzzer::updateLEDs() {
   if (patternStep > 255) patternStep = 0;
 }
 
+/**
+ * @brief Set LED colors with PWM brightness control
+ * @param red Red LED brightness (0-255)
+ * @param green Green LED brightness (0-255)
+ * @param blue Blue LED brightness (0-255)
+ * @param yellow Yellow LED brightness (0-255)
+ * @param white White LED brightness (0-255)
+ * 
+ * Only sets LEDs that have valid pin assignments (>= 0).
+ */
 void DualBuzzer::setLEDColor(int red, int green, int blue, int yellow, int white) {
   if (ledConfig.redPin >= 0) analogWrite(ledConfig.redPin, red);
   if (ledConfig.greenPin >= 0) analogWrite(ledConfig.greenPin, green);
@@ -429,9 +562,20 @@ void DualBuzzer::setLEDColor(int red, int green, int blue, int yellow, int white
   if (ledConfig.whitePin >= 0) analogWrite(ledConfig.whitePin, white);
 }
 
+/**
+ * @brief Apply frequency-based LED colors with pulsing effect
+ * 
+ * Maps different frequency ranges to specific LED colors:
+ * - Bass (130-260 Hz) -> Red
+ * - Mid-low (261-520 Hz) -> Yellow  
+ * - Mid (521-1040 Hz) -> Green
+ * - High (1041-2080 Hz) -> Blue
+ * - Very high (>2080 Hz) -> White
+ */
 void DualBuzzer::applyFrequencyBands() {
   int melodyFreq = 0, harmonyFreq = 0;
   
+  // Get current frequencies from PROGMEM
   if (melodyPlaying && melodyNotes != NULL && melodyIndex < melodyLength) {
     Note currentNote;
     memcpy_P(&currentNote, &melodyNotes[melodyIndex], sizeof(Note));
@@ -472,7 +616,7 @@ void DualBuzzer::applyFrequencyBands() {
     white = 255;
   }
   
-  // Add some pulsing effect
+  // Add pulsing effect using sine wave
   int pulse = (sin(patternStep * 0.1) + 1) * 127;
   red = (red * pulse) / 255;
   green = (green * pulse) / 255;
@@ -483,8 +627,14 @@ void DualBuzzer::applyFrequencyBands() {
   setLEDColor(red, green, blue, yellow, white);
 }
 
+/**
+ * @brief Apply beat-synchronized pulsing LED effect
+ * 
+ * Creates pulsing lights that peak on new beats, with color
+ * determined by the current melody frequency.
+ */
 void DualBuzzer::applyBeatPulse() {
-  // Pulse intensity based on beat and frequency
+  // Get current melody frequency
   int melodyFreq = (melodyPlaying && melodyNotes != NULL && melodyIndex < melodyLength) ? 
                    melodyNotes[melodyIndex].frequency : 0;
   
@@ -496,7 +646,7 @@ void DualBuzzer::applyBeatPulse() {
   
   intensity = (intensity * pulse) / 255;
   
-  // Distribute intensity across colors based on frequency
+  // Distribute intensity across colors based on frequency band
   int band = getFrequencyBand(melodyFreq);
   int red = (band == 0) ? intensity : 0;
   int yellow = (band == 1) ? intensity : 0;
@@ -507,6 +657,11 @@ void DualBuzzer::applyBeatPulse() {
   setLEDColor(red, green, blue, yellow, white);
 }
 
+/**
+ * @brief Apply rainbow chase LED effect
+ * 
+ * Cycles through colors in sequence with smooth brightness variation.
+ */
 void DualBuzzer::applyRainbowChase() {
   // Cycle through colors in sequence
   int step = (patternStep / 20) % 5;
@@ -521,6 +676,12 @@ void DualBuzzer::applyRainbowChase() {
   setLEDColor(red, green, blue, yellow, white);
 }
 
+/**
+ * @brief Apply VU meter style LED effect
+ * 
+ * Lights up more LEDs based on the combined "volume" of melody and harmony.
+ * Higher frequency/intensity = more LEDs lit.
+ */
 void DualBuzzer::applyVUMeter() {
   int melodyFreq = (melodyPlaying && melodyNotes != NULL && melodyIndex < melodyLength) ? 
                    melodyNotes[melodyIndex].frequency : 0;
@@ -540,10 +701,15 @@ void DualBuzzer::applyVUMeter() {
   setLEDColor(red, green, blue, yellow, white);
 }
 
+/**
+ * @brief Apply disco strobe LED effect
+ * 
+ * Fast strobing effect with random color selection while music is playing.
+ */
 void DualBuzzer::applyDiscoStrobe() {
   unsigned long currentTime = millis();
   
-  // Fast strobe effect
+  // Fast strobe effect timing
   if (currentTime - lastStrobeTime > 100) {
     strobeState = !strobeState;
     lastStrobeTime = currentTime;
@@ -562,10 +728,15 @@ void DualBuzzer::applyDiscoStrobe() {
     
     setLEDColor(red, green, blue, yellow, white);
   } else {
-    setLEDColor(0, 0, 0, 0, 0);
+    setLEDColor(0, 0, 0, 0, 0); // All off during strobe off phase
   }
 }
 
+/**
+ * @brief Get frequency band index for LED mapping
+ * @param frequency The frequency to categorize
+ * @return Band index (0-4) representing different frequency ranges
+ */
 int DualBuzzer::getFrequencyBand(int frequency) {
   if (frequency >= 130 && frequency <= 260) return 0;      // Red - Bass
   if (frequency >= 261 && frequency <= 520) return 1;      // Yellow - Mid-low
@@ -575,10 +746,48 @@ int DualBuzzer::getFrequencyBand(int frequency) {
   return 0; // Default to red for silent/low notes
 }
 
+
+
+
+void DualBuzzer::applySequentialNotes() { int melodyFreq = 0, harmonyFreq = 0; // Get current frequencies if (melodyPlaying && melodyNotes != NULL && melodyIndex < melodyLength) { Note currentNote; memcpy_P(&currentNote, &melodyNotes[melodyIndex], sizeof(Note)); melodyFre
+
+pasted
+
+Do like c++ (simialr to java doc) style comments for the methods and imporant code:
+
+I'll add C++ style documentation comments (similar to Javadoc) for the methods and important code sections in your DualBuzzer class.
+
+
+DualBuzzer with C++ Documentation Comments
+Code 
+I've added comprehensive C++ style documentation comments (similar to Javadoc) to your DualBuzzer methods. The documentation includes:
+
+Key Features Added:
+
+@brief descriptions for each method's primary purpose
+@param documentation for method parameters with types and descriptions
+@return documentation for return values where applicable
+Detailed inline comments explaining complex logic sections
+Block comments for major code sections explaining their purpose
+Documentation Highlights:
+
+Method signatures: Each method has a brief description of its purpo
+
+
+
+/**
+ * @brief Applies sequential note lighting effects for dual buzzer melody and harmony playback
+ * 
+ * This method handles LED visualization during dual buzzer operation by:
+ * - Reading current melody and harmony note frequencies from PROGMEM
+ * - Detecting note changes and triggering sparkle effects
+ * - Randomly selecting LEDs for each note to create visual variety
+ * - Preventing back-to-back LED repetition for better visual experience
+ */
 void DualBuzzer::applySequentialNotes() {
   int melodyFreq = 0, harmonyFreq = 0;
   
-  // Get current frequencies
+  // Get current frequencies from PROGMEM stored note sequences
   if (melodyPlaying && melodyNotes != NULL && melodyIndex < melodyLength) {
     Note currentNote;
     memcpy_P(&currentNote, &melodyNotes[melodyIndex], sizeof(Note));
@@ -591,7 +800,10 @@ void DualBuzzer::applySequentialNotes() {
     harmonyFreq = currentNote.frequency;
   }
   
-  // Check if note changed
+  /**
+   * Note change detection system - tracks when frequencies change
+   * to trigger special visual effects and prevent LED flicker
+   */
   if (melodyFreq != lastMelodyFreq || harmonyFreq != lastHarmonyFreq) {
     lastMelodyFreq = melodyFreq;
     lastHarmonyFreq = harmonyFreq;
@@ -599,14 +811,17 @@ void DualBuzzer::applySequentialNotes() {
     noteJustChanged = true;
   }
   
-  // Use melody frequency as primary, harmony as secondary
+  // Use melody frequency as primary, harmony as secondary fallback
   int primaryFreq = (melodyFreq > 0) ? melodyFreq : harmonyFreq;
   
-  // Turn off all LEDs first
+  // Clear all LED states before applying new lighting
   setLEDColor(0, 0, 0, 0, 0);
   
   if (primaryFreq > 0) {
-    // Generate a random LED for each note, ensuring no back-to-back repeats
+    /**
+     * Random LED selection with anti-repetition logic
+     * Ensures visual variety while preventing monotonous back-to-back same LED
+     */
     static int lastLED = -1;
     int currentLED;
     
@@ -616,7 +831,7 @@ void DualBuzzer::applySequentialNotes() {
     
     lastLED = currentLED;
     
-    // Light up the selected LED
+    // Map LED index to color channels (RGB + Yellow + White)
     int red = (currentLED == 0) ? 255 : 0;
     int green = (currentLED == 1) ? 255 : 0;
     int blue = (currentLED == 2) ? 255 : 0;
@@ -625,92 +840,121 @@ void DualBuzzer::applySequentialNotes() {
     
     setLEDColor(red, green, blue, yellow, white);
     
-    // Add sparkle effect on note changes
+    /**
+     * Sparkle effect on note transitions
+     * Creates a brief 100ms flash of all LEDs when notes change
+     */
     if (noteJustChanged && millis() - noteChangeTime < 100) {
       // Brief flash of all LEDs when note changes
       setLEDColor(100, 100, 100, 100, 100);
     }
   }
   
-  // Reset note change flag after sparkle duration
+  // Reset note change flag after sparkle duration expires
   if (millis() - noteChangeTime > 100) {
     noteJustChanged = false;
   }
 }
 
+/**
+ * @brief Plays a musical sequence with synchronized LED visualization
+ * 
+ * @param sequence Pointer to PROGMEM array of Note structures
+ * @param length Number of notes in the sequence
+ * @param buzzerPin Arduino pin number for the buzzer output
+ * 
+ * This method provides blocking playback of musical sequences with:
+ * - Frequency-mapped LED lighting effects
+ * - Proper timing for note duration and inter-note pauses
+ * - Support for rest notes (frequency = 0)
+ */
 void DualBuzzer::playSequenceWithLEDs(const Note* sequence, int length, int buzzerPin) {
   for (int i = 0; i < length; i++) {
     Note currentNote;
-    memcpy_P(&currentNote, &sequence[i], sizeof(Note));
+    memcpy_P(&currentNote, &sequence[i], sizeof(Note)); // Read from PROGMEM
     
-    // Turn off all LEDs first
+    // Clear all LEDs before each note
     setLEDColor(0, 0, 0, 0, 0);
     
     if (currentNote.frequency > 0) {
-      // Start the buzzer
+      // Generate audio tone
       tone(buzzerPin, currentNote.frequency);
       
-      // Light up LED based on the note frequency
+      // Map note frequency to appropriate LED color/pattern
       lightLEDForNote(currentNote.frequency);
       
-      // Wait for the note duration
+      // Hold note for specified duration
       delay(currentNote.duration);
       
-      // Stop the buzzer
+      // Stop audio output
       noTone(buzzerPin);
     } else {
-      // Rest note - all LEDs off
+      // Handle rest notes - silence with all LEDs off
       setLEDColor(0, 0, 0, 0, 0);
       delay(currentNote.duration);
     }
     
-    // Brief pause between notes for clarity
+    // Brief inter-note pause for musical clarity
     delay(50);
     setLEDColor(0, 0, 0, 0, 0);
   }
 }
 
-// Helper function to light specific LED based on note frequency
+/**
+ * @brief Maps musical note frequencies to specific LED colors and patterns
+ * 
+ * @param frequency The frequency in Hz of the note to visualize
+ * 
+ * This function implements a comprehensive frequency-to-color mapping system:
+ * - Natural notes (C,D,E,F,G,A,B) map to primary colors
+ * - Sharp/flat notes use blended colors
+ * - Octave variations (4th and 5th octaves) use same color schemes
+ * - Very high frequencies (>1000Hz) cycle through rainbow colors
+ * - Very low frequencies (<260Hz) use dim red pulsing effect
+ */
 void DualBuzzer::lightLEDForNote(int frequency) {
   if (!ledEnabled) return;
   
   // Map specific frequencies to LEDs with full brightness
-  // C notes -> Red LED
+  // C notes -> Red LED (Do)
   if ((frequency >= 260 && frequency <= 267) ||   // C4
       (frequency >= 520 && frequency <= 530)) {   // C5
     setLEDColor(255, 0, 0, 0, 0);
   }
-  // D notes -> Yellow LED
+  // D notes -> Yellow LED (Re)
   else if ((frequency >= 290 && frequency <= 300) ||  // D4
            (frequency >= 580 && frequency <= 595)) {  // D5
     setLEDColor(0, 0, 0, 255, 0);
   }
-  // E notes -> Green LED
+  // E notes -> Green LED (Mi)
   else if ((frequency >= 325 && frequency <= 335) ||  // E4
            (frequency >= 650 && frequency <= 670)) {  // E5
     setLEDColor(0, 255, 0, 0, 0);
   }
-  // F notes -> Blue LED
+  // F notes -> Blue LED (Fa)
   else if ((frequency >= 345 && frequency <= 355) ||  // F4
            (frequency >= 690 && frequency <= 710)) {  // F5
     setLEDColor(0, 0, 255, 0, 0);
   }
-  // G notes -> White LED
+  // G notes -> White LED (Sol)
   else if ((frequency >= 387 && frequency <= 400) ||  // G4
            (frequency >= 775 && frequency <= 795)) {  // G5
     setLEDColor(0, 0, 0, 0, 255);
   }
-  // A notes -> Red + Yellow (Orange)
+  // A notes -> Red + Yellow = Orange (La)
   else if ((frequency >= 435 && frequency <= 450) ||  // A4
            (frequency >= 870 && frequency <= 890)) {  // A5
     setLEDColor(255, 0, 0, 255, 0);
   }
-  // B notes -> Blue + Green (Cyan)
+  // B notes -> Blue + Green = Cyan (Ti)  
   else if ((frequency >= 490 && frequency <= 500) ||  // B4
            (frequency >= 980 && frequency <= 1000)) { // B5
     setLEDColor(0, 255, 255, 0, 0);
   }
-  // Sharp/Flat notes -> Combined colors
+  /**
+   * Sharp/Flat note handling with blended colors
+   * Creates intermediate colors for chromatic notes
+   */
   else if (frequency >= 277 && frequency <= 285) {    // C#/Db
     setLEDColor(255, 0, 0, 127, 0);  // Red + half Yellow
   }
@@ -723,9 +967,12 @@ void DualBuzzer::lightLEDForNote(int frequency) {
   else if (frequency >= 415 && frequency <= 425) {    // G#/Ab
     setLEDColor(127, 0, 0, 0, 255);  // Half Red + White
   }
-  // Very high notes -> Rainbow cycle effect
+  /**
+   * Very high frequency rainbow cycling effect
+   * Creates dynamic color changes for extreme high notes
+   */
   else if (frequency > 1000) {
-    // Cycle through colors based on frequency
+    // Cycle through colors based on frequency modulo
     int colorIndex = (frequency / 100) % 5;
     switch(colorIndex) {
       case 0: setLEDColor(255, 0, 0, 0, 0); break;    // Red
@@ -735,28 +982,49 @@ void DualBuzzer::lightLEDForNote(int frequency) {
       case 4: setLEDColor(0, 0, 0, 0, 255); break;    // White
     }
   }
-  // Very low notes -> Pulsing Red
+  // Very low notes -> Pulsing dim red for sub-bass frequencies
   else if (frequency < 260 && frequency > 0) {
     setLEDColor(200, 0, 0, 0, 0);  // Dim red
   }
-  // Default for unrecognized frequencies -> Dim white
+  // Default fallback for unrecognized frequencies
   else {
-    setLEDColor(0, 0, 0, 0, 100);
+    setLEDColor(0, 0, 0, 0, 100);  // Dim white
   }
 }
 
+/**
+ * @brief Maps frequency values to LED intensity levels
+ * 
+ * @param frequency Input frequency in Hz (0 for silence)
+ * @return int Mapped intensity value (0-255)
+ * 
+ * Provides linear mapping from frequency range to LED brightness:
+ * - 130Hz maps to minimum intensity (100)
+ * - 2093Hz maps to maximum intensity (255)
+ * - 0Hz (silence) maps to 0 intensity
+ */
 int DualBuzzer::mapFrequencyToIntensity(int frequency) {
   if (frequency == 0) return 0;
   
-  // Map frequency to intensity (higher frequencies = higher intensity)
+  // Linear mapping: higher frequencies = higher LED intensity
   int intensity = map(frequency, 130, 2093, 100, 255);
   return constrain(intensity, 0, 255);
 }
 
+/**
+ * @brief Displays animated idle screen when no music is playing
+ * 
+ * Creates an engaging idle animation with:
+ * - Scrolling text message on top LCD line
+ * - Wave animation pattern on bottom LCD line
+ * - Musical note symbols integrated into wave pattern
+ * - Controlled update timing (300ms intervals) for smooth animation
+ * - Overflow protection for animation counters
+ */
 void DualBuzzer::showIdleLCD() {
   unsigned long currentTime = millis();
   
-  // Only update animation at specified intervals
+  // Throttle animation updates to 300ms intervals for smooth motion
   if (currentTime - lastIdleUpdate < 300) { 
     return;
   }
@@ -764,72 +1032,93 @@ void DualBuzzer::showIdleLCD() {
   lastIdleUpdate = currentTime;
   isIdleMode = true;
   
-  // Create scrolling "Please select a song" message
+  /**
+   * Scrolling message system
+   * Creates horizontal scrolling text with padding for smooth wrap-around
+   */
   String message = "     Please select a new song to play!     ";
   int messageLength = message.length();
   
-  // Calculate scroll position with slower movement
-  int scrollPos = (idleAnimationStep / 2) % (messageLength + lcdCols); // Divide by 2 for slower scroll
+  // Calculate scroll position
+  int scrollPos = (idleAnimationStep / 2) % (messageLength + lcdCols);
   
-  // Create the display line
+  // Build display line by extracting characters at scroll position
   String displayLine = "";
   for (int i = 0; i < lcdCols; i++) {
     int charIndex = (scrollPos + i) % messageLength;
     displayLine += message.charAt(charIndex);
   }
   
-  // Top line: Scrolling message
+  // Display scrolling message on top line
   lcd->setCursor(0, 0);
   lcd->print(displayLine);
   
+  /**
+   * Wave animation generator for bottom LCD line
+   * Creates flowing wave pattern using ASCII characters
+   * with integrated musical note symbols
+   */
   String bottomLine = "";
   for (int i = 0; i < lcdCols; i++) {
-    // Create a wave effect
-    int animPhase = ((idleAnimationStep / 3) + i * 3) % 16; //animation cycle
+    // Phase calculation for wave effect across screen width
+    int animPhase = ((idleAnimationStep / 3) + i * 3) % 16;
     char animChar;
     
-    // Transition between characters
+    // Wave transition sequence using ASCII characters
     switch (animPhase) {
-      case 0: case 8: animChar = ' '; break;
-      case 1: case 9: animChar = '.'; break;
-      case 2: case 10: animChar = '-'; break;
-      case 3: case 11: animChar = '='; break;
-      case 4: case 12: animChar = '#'; break;
-      case 5: case 13: animChar = '='; break;
-      case 6: case 14: animChar = '-'; break;
-      case 7: case 15: animChar = '.'; break;
+      case 0: case 8: animChar = ' '; break;  // Empty space
+      case 1: case 9: animChar = '.'; break;  // Small dot
+      case 2: case 10: animChar = '-'; break; // Dash
+      case 3: case 11: animChar = '='; break; // Double dash
+      case 4: case 12: animChar = '#'; break; // Peak
+      case 5: case 13: animChar = '='; break; // Double dash
+      case 6: case 14: animChar = '-'; break; // Dash
+      case 7: case 15: animChar = '.'; break; // Small dot
       default: animChar = ' '; break;
     }
     
-    // Add musical symbols occasionally
+    // Inject musical note symbols at regular intervals during peaks
     if (i % 6 == 0 && (animPhase == 4 || animPhase == 12)) {
-      animChar = '*'; // 'Musical note'
+      animChar = '*'; // Musical note representation
     }
     
     bottomLine += animChar;
   }
   
+  // Display wave animation on bottom line
   lcd->setCursor(0, 1);
   lcd->print(bottomLine);
   
   idleAnimationStep++;
   
-  // Reset step counter to prevent overflow
+  // Prevent integer overflow by resetting counter periodically
   if (idleAnimationStep > 2000) {
     idleAnimationStep = 0;
   }
 }
 
-// Helper function to stop idle mode
+/**
+ * @brief Stops the idle mode animation and clears idle state
+ * 
+ * Used when transitioning from idle to active music playback
+ */
 void DualBuzzer::stopIdleMode() {
   isIdleMode = false;
 }
 
-// Helper function to start idle mode
+/**
+ * @brief Initializes and starts the idle mode animation
+ * 
+ * Prepares the system for idle state by:
+ * - Turning off all LEDs
+ * - Setting idle mode flag
+ * - Resetting animation counters
+ * - Triggering initial LCD display update
+ */
 void DualBuzzer::startIdleMode() {
-  setLEDColor(0,0,0,0,0);
+  setLEDColor(0,0,0,0,0);  // Clear all LED outputs
   isIdleMode = true;
-  idleAnimationStep = 0;
-  lastIdleUpdate = 0;
-  showIdleLCD();
+  idleAnimationStep = 0;   // Reset animation counter
+  lastIdleUpdate = 0;      // Force immediate update
+  showIdleLCD();           // Display initial animation frame
 }
