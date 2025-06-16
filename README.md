@@ -1,44 +1,34 @@
-# Arduino Karaoke Machine 🎤🎵
+# Arduino Karaoke Machine -- TEJ3M Summative
 
-A comprehensive multi-faceted karaoke system built on Arduino featuring dual-buzzer harmonized music, synchronized LED light shows, LCD lyric display with scrolling teleprompter, and full serial command interface.
+A comprehensive karaoke system built on Arduino featuring dual-buzzer harmonized music, synchronized LED light shows, LCD lyric display with scrolling teleprompter, and full serial command interface.
 
 ![Arduino Karaoke](https://img.shields.io/badge/Arduino-Karaoke%20Machine-blue?style=for-the-badge&logo=arduino)
 ![Status](https://img.shields.io/badge/Status-Complete-success?style=for-the-badge)
 
-## 🎯 Project Overview
+## Project Overview
 
-This Arduino karaoke machine transforms your microcontroller into a complete entertainment system with:
-- **Dual-buzzer harmonized music playback** (melody + harmony channels)
-- **Scrolling LCD teleprompter** with word-synchronized lyrics
-- **6 different LED visualization patterns** that dance to the music
-- **Interactive serial command interface** for full system control
-- **4 complete children's songs** with full verses and choruses
-- **Auto-play mode** with user interaction prompts
+This Arduino-based karaoke machine turns your microcontroller into a complete entertainment system. The system includes dual-buzzer harmonized music playback with separate melody and harmony channels, a scrolling LCD teleprompter with word-synchronized lyrics, six different LED visualization patterns that respond to the music, an interactive serial command interface for complete system control, four complete children's songs with full verses and choruses, and an auto-play mode with user interaction prompts.
 
-## ✨ Key Features
+## Key Features
 
-### 🎵 Music System
-- **Dual Buzzer Harmony**: Separate melody and harmony tracks played simultaneously
-- **4 Songs**:
-  - 🌟 Twinkle Twinkle Little Star
-  - 🔔 Jingle Bells
-  - 🔤 ABC Song
-  - 🐑 Mary Had a Little Lamb
+### Music System
+The dual buzzer setup plays separate melody and harmony tracks simultaneously. The system comes loaded with four popular children's songs: Twinkle Twinkle Little Star, Jingle Bells, ABC Song, and Mary Had a Little Lamb.
 
-### 📺 LCD Teleprompter System
-- **Scrolling Lyrics**: Custom right-to-left scrolling function
-- **Song Information Display**: Shows current song title and number
+### LCD Teleprompter System
+The LCD display features scrolling lyrics with a custom right-to-left scrolling function and shows current song information including title and number.
 
-### 💡 LED Light Show (6 Patterns)
+### LED Light Show (6 Patterns)
+The system offers six distinct LED visualization patterns:
+
 1. **Frequency Bands** - LEDs respond to note frequencies
-2. **Beat Pulse** - Synchronized pulsing with rhythm
+2. **Beat Pulse** - Synchronized pulsing with rhythm  
 3. **Rainbow Chase** - Colorful sequential LED chasing
 4. **VU Meter** - Volume/intensity visualization
 5. **Disco Strobe** - High-energy flashing patterns
 6. **Sequential Notes** - LEDs light up with individual notes
 
-### 🖥️ Serial Command Interface
-Complete control via USB serial connection with 15+ commands:
+### Serial Command Interface
+Complete control via USB serial connection with over 15 commands for playback control, system settings, information queries, and interactive responses.
 
 #### Playback Control
 ```
@@ -67,17 +57,17 @@ yes/y          - Play song again (when prompted)
 no/n           - Skip to next song (when prompted)
 ```
 
-## 🔧 Hardware Requirements
+## Hardware Requirements
 
 ### Core Components
-- **Arduino Uno R4**
-- **2x Piezo Buzzers** (passive, for melody and harmony)
-- **2x NPN Transistors**
-- **16x2 I2C LCD Display** (with I2C backpack)
-- **5x LEDs**: Red, Green, Blue, Yellow, White
-- **5x 220Ω Resistors** (for LED current limiting)
-- **2x 1kΩ Resistors** (for buzzer current limiting)
-- **Breadboard and jumper wires**
+- Arduino Uno R4
+- 2x Piezo Buzzers (passive, for melody and harmony)
+- 2x NPN Transistors
+- 16x2 I2C LCD Display (with I2C backpack)
+- 5x LEDs: Red, Green, Blue, Yellow, White
+- 5x 220Ω Resistors (for LED current limiting)
+- 2x 1kΩ Resistors (for buzzer current limiting)
+- Breadboard and jumper wires
 
 ### Pin Configuration
 ```cpp
@@ -98,7 +88,7 @@ SCL:            A5
 LCD Address:    0x27 (default)
 ```
 
-## 📦 Software Dependencies
+## Software Dependencies
 
 ### Required Libraries
 ```cpp
@@ -108,42 +98,20 @@ LCD Address:    0x27 (default)
 ```
 
 ### Installation
-1. Install **LiquidCrystal_I2C** library via Arduino IDE Library Manager
-2. Download **DualBuzzer.h** and **pitches.h** (included in project)
-3. Place all files in same directory as main.ino
+Install the LiquidCrystal_I2C library through the Arduino IDE Library Manager. Download the DualBuzzer.h and pitches.h files (included in the project) and place all files in the same directory as main.ino.
 
-## 🚀 Quick Start Guide
+## Quick Start Guide
 
-### 1. Hardware Setup
-```
-Arduino Uno
-├── Pin 9  → Melody Buzzer (+)
-├── Pin 10 → Harmony Buzzer (+)
-├── Pin 3  → Red LED → 220Ω → GND
-├── Pin 5  → Green LED → 220Ω → GND
-├── Pin 6  → Blue LED → 220Ω → GND
-├── Pin 11 → Yellow LED → 220Ω → GND
-├── Pin 12 → White LED → 220Ω → GND
-├── A4     → LCD SDA
-├── A5     → LCD SCL
-├── 5V     → LCD VCC & Buzzer (-) pins
-└── GND    → LCD GND & LED common
-```
+### Hardware Setup
+Connect the Arduino Uno with Pin 9 to the melody buzzer positive terminal, Pin 10 to the harmony buzzer positive terminal, Pins 3, 5, 6, 11, and 12 to their respective LEDs through 220Ω resistors to ground, A4 to LCD SDA, A5 to LCD SCL, 5V to LCD VCC and buzzer negative pins, and GND to LCD ground and LED common ground.
 
-### 2. Upload Code
-1. Connect Arduino via USB
-2. Open Arduino IDE
-3. Load main.ino
-4. Select correct board and port
-5. Upload code
+### Upload Code
+Connect the Arduino via USB, open Arduino IDE, load main.ino, select the correct board and port, then upload the code.
 
-### 3. Start Using
-1. Open Serial Monitor (9600 baud)
-2. Type `help` to see all commands
-3. Type `list` to see available songs
-4. Type `play 0` to start first song
+### Getting Started
+Open the Serial Monitor at 9600 baud rate. Type "help" to see all available commands, "list" to view available songs, and "play 0" to start the first song.
 
-## 🎮 Usage Examples
+## Usage Examples
 
 ### Basic Playback
 ```
@@ -180,18 +148,11 @@ You have 10 seconds to respond...
 Playing song again...
 ```
 
-## 🛠️ Technical Implementation
+## Technical Implementation
 
-### Programming Elements Used
-- ✅ **Conditional Structures**: Extensive if/else logic for command processing
-- ✅ **Loops**: For animations, LED patterns, and music playback
-- ✅ **Arrays**: Song data storage, lyric timing, LED patterns
-- ✅ **Functions**: Modular code organization with 15+ custom functions
-- ✅ **PROGMEM**: Flash memory storage for large datasets
-- ✅ **State Management**: Complex state tracking for playback control
+The project demonstrates several key programming concepts including conditional structures with extensive if/else logic for command processing, loops for animations and LED patterns and music playback, arrays for song data storage and lyric timing and LED patterns, functions with modular code organization using over 15 custom functions, PROGMEM for flash memory storage of large datasets, and state management for complex state tracking during playback control.
 
-
-## 🎵 Song Library
+## Song Library
 
 ### Available Songs
 
@@ -203,43 +164,30 @@ Playing song again...
 | 3 | Mary Had a Little Lamb | ~25s |
 
 ### Adding New Songs
-1. Define melody and harmony note arrays in PROGMEM
-2. Create lyric timing array with word synchronization
-3. Add to songs[] array structure
-4. Update SONG_COUNT variable
+To add new songs, define melody and harmony note arrays in PROGMEM, create lyric timing arrays with word synchronization, add to the songs[] array structure, and update the SONG_COUNT variable.
 
-## 🎨 LED Patterns Explained
+## LED Patterns Explained
 
 ### Pattern Details
-- **Pattern 0 - Frequency Bands**: LEDs brightness varies with note pitch
-- **Pattern 1 - Beat Pulse**: All LEDs pulse together with rhythm
-- **Pattern 2 - Rainbow Chase**: Sequential color cycling across LEDs
-- **Pattern 3 - VU Meter**: Progressive LED activation like audio meter
-- **Pattern 4 - Disco Strobe**: High-energy random flashing
-- **Pattern 5 - Sequential Notes**: Individual LED per note played
+Pattern 0 (Frequency Bands) varies LED brightness with note pitch. Pattern 1 (Beat Pulse) pulses all LEDs together with the rhythm. Pattern 2 (Rainbow Chase) cycles colors sequentially across LEDs. Pattern 3 (VU Meter) progressively activates LEDs like an audio meter. Pattern 4 (Disco Strobe) creates high-energy random flashing. Pattern 5 (Sequential Notes) lights individual LEDs for each note played.
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
 **LCD not displaying**
-- Check I2C connections (SDA/SCL)
-- Verify LCD address (use I2C scanner)
-- Ensure proper power supply
+Check I2C connections (SDA/SCL), verify the LCD address using an I2C scanner, and ensure proper power supply.
 
 **No sound from buzzers**
-- Verify buzzer polarity
-- Check pin connections (9 and 10)
-- Ensure buzzers are passive type
+Verify buzzer polarity, check pin connections (9 and 10), and ensure buzzers are the passive type.
 
 **LEDs not working**
-- Check resistor values (220Ω recommended)
-- Verify pin connections
-- Ensure adequate power supply
+Check resistor values (220Ω recommended), verify pin connections, and ensure adequate power supply.
 
 **Serial commands not responding**
-- Set baud rate to 9600
-- Check USB cable connection
-- Ensure proper line endings
+Set baud rate to 9600, check USB cable connection, and ensure proper line endings.
+
+## Contributors
+Author: **Elliott Starosta**
 
 ## **Happy Singing! 🎵✨**
