@@ -3,165 +3,169 @@
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
 
-// Structure to hold a musical note and its duration
+/**
+ * @struct Note
+ * @brief Structure to hold a musical note and its duration
+ */
 struct Note {
-  int frequency;
-  int duration;
+    int frequency;  // Hz
+    int duration;   // milliseconds
 };
 
+/**
+ * @struct LyricTiming
+ * @brief Structure to synchronize lyrics with musical notes
+ */
 struct LyricTiming {
-  String word;
-  int noteIndex;
+    String word;      // Word or phrase to display
+    int noteIndex;    // Note index for timing
 };
 
-// LED configuration structure
+/**
+ * @struct LEDConfig
+ * @brief Configuration structure for LED pin assignments
+ */
 struct LEDConfig {
-  int redPin;
-  int bluePin;
-  int greenPin;
-  int yellowPin;
-  int whitePin;
+    int redPin;
+    int bluePin;
+    int greenPin;
+    int yellowPin;
+    int whitePin;
 };
 
-// LED pattern types
+/**
+ * @enum LEDPattern
+ * @brief Enumeration of available LED light show patterns
+ */
 enum LEDPattern {
-  PATTERN_FREQUENCY_BANDS,  // Different colors for frequency ranges
-  PATTERN_BEAT_PULSE,       // Pulse on beat with intensity
-  PATTERN_RAINBOW_CHASE,    // Cycling through colors
-  PATTERN_VU_METER,         // VU meter style with frequency
-  PATTERN_DISCO_STROBE,      // Disco strobe effect
-  PATTERN_SEQUENTIAL_NOTES   // Light up LEDs one at a time based on specific notes
+    PATTERN_FREQUENCY_BANDS,    // Colors based on frequency ranges
+    PATTERN_BEAT_PULSE,         // LEDs pulse with beat intensity
+    PATTERN_RAINBOW_CHASE,      // Continuous color cycling
+    PATTERN_VU_METER,           // Visual music volume/frequency
+    PATTERN_DISCO_STROBE,       // Strobe effect with music
+    PATTERN_SEQUENTIAL_NOTES    // Sequential LED activation
 };
 
+/**
+ * @class DualBuzzer
+ * @brief Controls dual buzzers for melody and harmony playback
+ */
 class DualBuzzer {
 private:
-  int melodyPin;
-  int harmonyPin;
+    // Hardware pins
+    int melodyPin;
+    int harmonyPin;
 
-  Note* melodyNotes;
-  Note* harmonyNotes;
+    // Music data
+    Note* melodyNotes;
+    Note* harmonyNotes;
+    int melodyLength;
+    int harmonyLength;
 
-  int melodyLength;
-  int harmonyLength;
+    // Timing control
+    unsigned long melodyStartTime;
+    unsigned long harmonyStartTime;
+    int melodyIndex;
+    int harmonyIndex;
 
-  unsigned long melodyStartTime;
-  unsigned long harmonyStartTime;
+    // Playback status
+    bool melodyPlaying;
+    bool harmonyPlaying;
 
-  int melodyIndex;
-  int harmonyIndex;
+    // Lyrics system
+    LyricTiming* lyrics;
+    int lyricsCount;
+    int currentLyricIndex;
 
-  // Status flags
-  bool melodyPlaying;
-  bool harmonyPlaying;
+    // LCD display
+    LiquidCrystal_I2C* lcd;
+    int lcdRows;
+    int lcdCols;
 
+    // LED system
+    LEDConfig ledConfig;
+    bool ledEnabled;
+    LEDPattern currentPattern;
+    unsigned long lastLEDUpdate;
+    int ledUpdateInterval;
+    int patternStep;
+    int beatCounter;
+    int lastMelodyFreq;
+    int lastHarmonyFreq;
+    unsigned long noteChangeTime;
+    bool noteJustChanged;
 
-  LyricTiming* lyrics;
-  int lyricsCount;
-  int currentLyricIndex;
+    // LED effects
+    int currentIntensity;
+    bool strobeState;
+    unsigned long lastStrobeTime;
 
-  // I2C LCD Display
-  LiquidCrystal_I2C* lcd;
-  int lcdRows;
-  int lcdCols;
-
-  // LED disco system
-  LEDConfig ledConfig;
-  bool ledEnabled;
-  LEDPattern currentPattern;
-  unsigned long lastLEDUpdate;
-  int ledUpdateInterval;
-  int patternStep;
-  int beatCounter;
-  int lastMelodyFreq;
-  int lastHarmonyFreq;
-  unsigned long noteChangeTime;
-  bool noteJustChanged;
-
-  // LED effect variables
-  int currentIntensity;
-  bool strobeState;
-  unsigned long lastStrobeTime;
-
-  // IDLE Mode
-  int idleAnimationStep;
-  bool isIdleMode;
-  unsigned long lastIdleUpdate;
+    // Idle mode
+    int idleAnimationStep;
+    bool isIdleMode;
+    unsigned long lastIdleUpdate;
 
 public:
-  // Constructor
-  DualBuzzer(int melodyBuzzerPin, int harmonyBuzzerPin);
+    // Constructor
+    DualBuzzer(int melodyBuzzerPin, int harmonyBuzzerPin);
 
-  // Set the melody and harmony note arrays
-  void setMelody(Note* notes, int length);
-  void setHarmony(Note* notes, int length);
+    // Music setup
+    void setMelody(Note* notes, int length);
+    void setHarmony(Note* notes, int length);
+    void setSong(Note* melodyNotes, int melodyLength, Note* harmonyNotes, int harmonyLength);
+    void setLyrics(LyricTiming* timings, int count);
 
-  // Set both melody and harmony at once (change song)
-  void setSong(Note* melodyNotes, int melodyLength, Note* harmonyNotes, int harmonyLength);
+    // Display setup
+    void setLCD(LiquidCrystal_I2C* display, int rows, int columns);
 
-  // Set lyrics for the song
-  void setLyrics(LyricTiming* timings, int count);
+    // LED setup and control
+    void setupLEDs(int redPin, int bluePin, int greenPin, int yellowPin, int whitePin);
+    void setLEDPattern(LEDPattern pattern);
+    void enableLEDs(bool enable);
 
-  // Set I2C LCD display
-  void setLCD(LiquidCrystal_I2C* display, int rows, int columns);
+    // Playback control
+    void play();              // Start both parts
+    void playMelody();        // Start melody only
+    void playHarmony();       // Start harmony only
+    void stop();              // Stop all
+    void stopMelody();        // Stop melody only
+    void stopHarmony();       // Stop harmony only
 
-  // LED system functions
-  void setupLEDs(int redPin, int bluePin, int greenPin, int yellowPin, int whitePin);
-  void setLEDPattern(LEDPattern pattern);
-  void enableLEDs(bool enable);
+    // Main update loop
+    void update();            // Call in main loop
+    bool isPlaying();         // Check playback status
 
-  // Start playing both parts
-  void play();
+    // Display functions
+    void updateLyrics();
+    void updateSlidingLyrics();
+    void clearLyrics();
 
-  // Start playing individual parts
-  void playMelody();
-  void playHarmony();
+    // LED control
+    void setLEDColor(int red, int green, int blue, int yellow, int white);
+    void lightLEDForNote(int freq);
+    void playSequenceWithLEDs(const Note* sequence, int length, int buzzerPin);
 
-  // Stop playing
-  void stop();
-  void stopMelody();
-  void stopHarmony();
-
-  // Update function to be called in the main loop
-  void update();
-
-  // Check if playing is complete
-  bool isPlaying();
-
-  // Internal function to display lyrics
-  void updateLyrics();
-
-  // Sliding lyrics functions
-  void updateSlidingLyrics();
-
-  // Clear lyrics display
-  void clearLyrics();
-
-  // LED control (global)
-  void setLEDColor(int red, int green, int blue, int yellow, int white);
-
-  void lightLEDForNote(int freq);
-
-  void playSequenceWithLEDs(const Note* sequence, int length, int buzzerPin);
-
-  // IDLE
-  void startIdleMode();
-  void stopIdleMode();
+    // Idle mode
+    void startIdleMode();
+    void stopIdleMode();
 
 private:
-  // Helper function to split lyrics into words
-  void splitLyrics();
+    // Helper functions
+    void splitLyrics();
 
-  // LED control functions
-  void updateLEDs();
-  void applyFrequencyBands();
-  void applyBeatPulse();
-  void applyRainbowChase();
-  void applyVUMeter();
-  void applyDiscoStrobe();
-  void applySequentialNotes();
-  int getFrequencyBand(int frequency);
-  int mapFrequencyToIntensity(int frequency);
-  void showIdleLCD();
+    // LED pattern implementations
+    void updateLEDs();
+    void applyFrequencyBands();
+    void applyBeatPulse();
+    void applyRainbowChase();
+    void applyVUMeter();
+    void applyDiscoStrobe();
+    void applySequentialNotes();
+    
+    // LED utilities
+    int getFrequencyBand(int frequency);
+    int mapFrequencyToIntensity(int frequency);
+    void showIdleLCD();
 };
 
 #endif
