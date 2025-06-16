@@ -1,3 +1,15 @@
+/**
+ * @file main.ino
+ * @brief Main Arduino sketch for dual buzzer music player with LED effects
+ * 
+ * @details This sketch implements a karokee system using two buzzers
+ * for melody and harmony, with synchronized LED effects and LCD display for
+ * lyrics. It includes multiple songs and visual patterns.
+ * 
+ * @author Elliott Starosta
+ * @date June 16, 2025
+ */
+
 #include "DualBuzzer.h"
 #include <LiquidCrystal_I2C.h>
 #include "pitches.h"
@@ -138,73 +150,72 @@ const LyricTiming twinkleLyricTimings[] PROGMEM = {
 // Song 2: Jingle Bells - PROGMEM
 const Note jingleMelody[] PROGMEM = {
   // "Jingle bells, jingle bells"
-  {NOTE_E4, 250}, {NOTE_E4, 250}, {NOTE_E4, 500},
-  {NOTE_E4, 250}, {NOTE_E4, 250}, {NOTE_E4, 500},
-  {NOTE_E4, 250}, {NOTE_G4, 250}, {NOTE_C4, 375}, {NOTE_D4, 125},
-  {NOTE_E4, 1000},
+  {NOTE_E4, 300}, {NOTE_E4, 300}, {NOTE_E4, 600},
+  {NOTE_E4, 300}, {NOTE_E4, 300}, {NOTE_E4, 600},
+  {NOTE_E4, 300}, {NOTE_G4, 300}, {NOTE_C4, 450}, {NOTE_D4, 150},
+  {NOTE_E4, 1200},
   
   // "Jingle all the way"
-  {NOTE_F4, 250}, {NOTE_F4, 250}, {NOTE_F4, 375}, {NOTE_F4, 125},
-  {NOTE_F4, 250}, {NOTE_E4, 250}, {NOTE_E4, 250}, {NOTE_E4, 250},
-  {NOTE_E4, 250}, {NOTE_D4, 250}, {NOTE_D4, 250}, {NOTE_E4, 250},
-  {NOTE_D4, 500}, {NOTE_G4, 500},
+  {NOTE_F4, 300}, {NOTE_F4, 300}, {NOTE_F4, 450}, {NOTE_F4, 150},
+  {NOTE_F4, 300}, {NOTE_E4, 300}, {NOTE_E4, 300}, {NOTE_E4, 300},
+  {NOTE_E4, 300}, {NOTE_D4, 300}, {NOTE_D4, 300}, {NOTE_E4, 300},
+  {NOTE_D4, 600}, {NOTE_G4, 600},
   
   // "Oh what fun it is to ride"
-  {NOTE_E4, 250}, {NOTE_E4, 250}, {NOTE_E4, 500},
-  {NOTE_E4, 250}, {NOTE_E4, 250}, {NOTE_E4, 500},
-  {NOTE_E4, 250}, {NOTE_G4, 250}, {NOTE_C4, 375}, {NOTE_D4, 125},
-  {NOTE_E4, 1000},
+  {NOTE_E4, 300}, {NOTE_E4, 300}, {NOTE_E4, 600},
+  {NOTE_E4, 300}, {NOTE_E4, 300}, {NOTE_E4, 600},
+  {NOTE_E4, 300}, {NOTE_G4, 300}, {NOTE_C4, 450}, {NOTE_D4, 150},
+  {NOTE_E4, 1200},
   
   // "In a one-horse open sleigh"
-  {NOTE_F4, 250}, {NOTE_F4, 250}, {NOTE_F4, 375}, {NOTE_F4, 125},
-  {NOTE_F4, 250}, {NOTE_E4, 250}, {NOTE_E4, 250}, {NOTE_E4, 250},
-  {NOTE_G4, 250}, {NOTE_G4, 250}, {NOTE_F4, 250}, {NOTE_D4, 250},
-  {NOTE_C4, 1000}
+  {NOTE_F4, 300}, {NOTE_F4, 300}, {NOTE_F4, 450}, {NOTE_F4, 150},
+  {NOTE_F4, 300}, {NOTE_E4, 300}, {NOTE_E4, 300}, {NOTE_E4, 300},
+  {NOTE_G4, 300}, {NOTE_G4, 300}, {NOTE_F4, 300}, {NOTE_D4, 300},
+  {NOTE_C4, 1200}
 };
 
 const Note jingleHarmony[] PROGMEM = {
   // Harmony for "Jingle bells, jingle bells"
-  {NOTE_C4, 250}, {NOTE_C4, 250}, {NOTE_C4, 500},
-  {NOTE_C4, 250}, {NOTE_C4, 250}, {NOTE_C4, 500},
-  {NOTE_C4, 250}, {NOTE_E4, 250}, {NOTE_G3, 375}, {NOTE_B3, 125},
-  {NOTE_C4, 1000},
+  {NOTE_C4, 300}, {NOTE_C4, 300}, {NOTE_C4, 600},
+  {NOTE_C4, 300}, {NOTE_C4, 300}, {NOTE_C4, 600},
+  {NOTE_C4, 300}, {NOTE_E4, 300}, {NOTE_G3, 450}, {NOTE_B3, 150},
+  {NOTE_C4, 1200},
   
   // Harmony for "Jingle all the way"
-  {NOTE_D4, 250}, {NOTE_D4, 250}, {NOTE_D4, 375}, {NOTE_D4, 125},
-  {NOTE_D4, 250}, {NOTE_C4, 250}, {NOTE_C4, 250}, {NOTE_C4, 250},
-  {NOTE_G3, 250}, {NOTE_B3, 250}, {NOTE_B3, 250}, {NOTE_C4, 250},
-  {NOTE_B3, 500}, {NOTE_D4, 500},
+  {NOTE_D4, 300}, {NOTE_D4, 300}, {NOTE_D4, 450}, {NOTE_D4, 150},
+  {NOTE_D4, 300}, {NOTE_C4, 300}, {NOTE_C4, 300}, {NOTE_C4, 300},
+  {NOTE_G3, 300}, {NOTE_B3, 300}, {NOTE_B3, 300}, {NOTE_C4, 300},
+  {NOTE_B3, 600}, {NOTE_D4, 600},
   
   // Repeat harmony pattern
-  {NOTE_C4, 250}, {NOTE_C4, 250}, {NOTE_C4, 500},
-  {NOTE_C4, 250}, {NOTE_C4, 250}, {NOTE_C4, 500},
-  {NOTE_C4, 250}, {NOTE_E4, 250}, {NOTE_G3, 375}, {NOTE_B3, 125},
-  {NOTE_C4, 1000},
+  {NOTE_C4, 300}, {NOTE_C4, 300}, {NOTE_C4, 600},
+  {NOTE_C4, 300}, {NOTE_C4, 300}, {NOTE_C4, 600},
+  {NOTE_C4, 300}, {NOTE_E4, 300}, {NOTE_G3, 450}, {NOTE_B3, 150},
+  {NOTE_C4, 1200},
   
-  {NOTE_D4, 250}, {NOTE_D4, 250}, {NOTE_D4, 375}, {NOTE_D4, 125},
-  {NOTE_D4, 250}, {NOTE_C4, 250}, {NOTE_C4, 250}, {NOTE_C4, 250},
-  {NOTE_E4, 250}, {NOTE_E4, 250}, {NOTE_D4, 250}, {NOTE_B3, 250},
-  {NOTE_G3, 1000}
+  {NOTE_D4, 300}, {NOTE_D4, 300}, {NOTE_D4, 450}, {NOTE_D4, 150},
+  {NOTE_D4, 300}, {NOTE_C4, 300}, {NOTE_C4, 300}, {NOTE_C4, 300},
+  {NOTE_E4, 300}, {NOTE_E4, 300}, {NOTE_D4, 300}, {NOTE_B3, 300},
+  {NOTE_G3, 1200}
 };
 
 const LyricTiming jingleLyricTimings[] PROGMEM = {
     // First verse: "Jingle bells, jingle bells, jingle all the way"
-    {"Jingle", 0}, {"bells", 2}, {"jingle", 3}, {"bells", 5}, {"jingle", 6},
-    {"all", 8}, {"the", 9}, {"way", 10},
+    {"Jingle", 0}, {"bells", 1}, {"jingle", 3}, {"bells", 4}, {"jingle", 6},
+    {"all", 7}, {"the", 8}, {"way", 9},
 
     // Second part: "Oh what fun it is to ride in a one-horse open sleigh"
     {"Oh", 11}, {"what", 12}, {"fun", 13}, {"it", 14}, {"is", 15}, {"to", 16}, {"ride", 17},
-    {"in", 18}, {"a", 19}, {"one", 20}, {"horse", 21}, {"open", 22}, {"sleigh", 24},
+    {"in", 18}, {"a", 19}, {"one", 20}, {"horse", 21}, {"open", 22}, {"sleigh", 23},
 
     // Repeat: "Jingle bells, jingle bells, jingle all the way"
-    {"Jingle", 25}, {"bells", 27}, {"jingle", 28}, {"bells", 30}, {"jingle", 31},
-    {"all", 33}, {"the", 34}, {"way", 35},
+    {"Jingle", 25}, {"bells", 26}, {"jingle", 28}, {"bells", 29}, {"jingle", 31},
+    {"all", 32}, {"the", 33}, {"way", 34},
 
     // Final: "Oh what fun it is to ride in a one-horse open sleigh"
     {"Oh", 36}, {"what", 37}, {"fun", 38}, {"it", 39}, {"is", 40}, {"to", 41}, {"ride", 42},
-    {"in", 43}, {"a", 44}, {"one", 45}, {"horse", 46}, {"open", 47}, {"sleigh", 49}
+    {"in", 43}, {"a", 44}, {"one", 45}, {"horse", 46}, {"open", 47}, {"sleigh", 48}
 };
-
 // Song 3: ABC
 const Note abcMelody[] PROGMEM = {
   // "A B C D E F G"
@@ -411,7 +422,7 @@ void setup() {
   Serial.println("  led on/off - Enable/disable LEDs");
   Serial.println("  pattern <0-4> - Change LED pattern");
   Serial.println("  status - Show current status");
-  Serial.println("  yes/y - Play song again (when prompted)");
+  Serial.println("  yes/y - PlaYy song again (when prompted)");
   Serial.println("  no/n - Skip to next song (when prompted)");
   Serial.println("  help - Show this help menu");
   Serial.println();
