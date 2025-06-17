@@ -2,7 +2,7 @@
  * @file main.ino
  * @brief Main Arduino sketch for dual buzzer music player with LED effects
  * 
- * @details This sketch implements a karokee system using two buzzers
+ * @details This sketch implements a musical playback system using two buzzers
  * for melody and harmony, with synchronized LED effects and LCD display for
  * lyrics. It includes multiple songs and visual patterns.
  * 
@@ -20,9 +20,9 @@ const int HARMONY_BUZZER_PIN = 10;
 
 // LED pin definitions
 const int LED_RED_PIN = 3;
-const int LED_GREEN_PIN = 5;
-const int LED_BLUE_PIN = 6;
-const int LED_YELLOW_PIN = 11;
+const int LED_YELLOW_PIN = 5;
+const int LED_GREEN_PIN = 6;
+const int LED_BLUE_PIN = 11;
 const int LED_WHITE_PIN = 12;
 
 // I2C LCD configuration
@@ -216,90 +216,8 @@ const LyricTiming jingleLyricTimings[] PROGMEM = {
     {"Oh", 36}, {"what", 37}, {"fun", 38}, {"it", 39}, {"is", 40}, {"to", 41}, {"ride", 42},
     {"in", 43}, {"a", 44}, {"one", 45}, {"horse", 46}, {"open", 47}, {"sleigh", 48}
 };
-// Song 3: ABC
-const Note abcMelody[] PROGMEM = {
-  // "A B C D E F G"
-  {NOTE_C4, 400}, {NOTE_C4, 400}, {NOTE_G4, 400}, {NOTE_G4, 400},
-  {NOTE_A4, 400}, {NOTE_A4, 400}, {NOTE_G4, 800},
 
-  // "H I J K L M N"
-  {NOTE_F4, 400}, {NOTE_F4, 400}, {NOTE_E4, 400}, {NOTE_E4, 400},
-  {NOTE_D4, 400}, {NOTE_D4, 400}, {NOTE_C4, 800},
-
-  // "O P Q R S"
-  {NOTE_G4, 400}, {NOTE_G4, 400}, {NOTE_F4, 400}, {NOTE_F4, 400},
-  {NOTE_E4, 400}, 
-
-  // "T U V"
-  {NOTE_E4, 400}, {NOTE_D4, 800},
-
-  // "W X Y and Z"
-  {NOTE_G4, 400}, {NOTE_G4, 400}, {NOTE_F4, 400}, {NOTE_F4, 400},
-  {NOTE_E4, 400}, {NOTE_E4, 400}, {NOTE_D4, 800},
-
-  // "Now I know my ABCs"
-  {NOTE_C4, 400}, {NOTE_C4, 400}, {NOTE_G4, 400}, {NOTE_G4, 400},
-  {NOTE_A4, 400}, {NOTE_A4, 400}, {NOTE_G4, 800},
-
-  // "Next time won't you sing with me"
-  {NOTE_F4, 400}, {NOTE_F4, 400}, {NOTE_E4, 400}, {NOTE_E4, 400},
-  {NOTE_D4, 400}, {NOTE_D4, 400}, {NOTE_C4, 800}
-};
-
-const Note abcHarmony[] PROGMEM = {
-  // "A B C D E F G"
-  {NOTE_E4, 400}, {NOTE_E4, 400}, {NOTE_B4, 400}, {NOTE_B4, 400},
-  {NOTE_C5, 400}, {NOTE_C5, 400}, {NOTE_B4, 800},
-
-  // "H I J K L M N"
-  {NOTE_A4, 400}, {NOTE_A4, 400}, {NOTE_G4, 400}, {NOTE_G4, 400},
-  {NOTE_F4, 400}, {NOTE_F4, 400}, {NOTE_E4, 800},
-
-  // "O P Q R S"
-  {NOTE_E4, 400}, {NOTE_E4, 400}, {NOTE_D4, 400}, {NOTE_D4, 400},
-  {NOTE_C4, 400},
-
-  // "T U V"
-  {NOTE_C4, 400}, {NOTE_B3, 800},
-
-  // "W X Y and Z"
-  {NOTE_E4, 400}, {NOTE_E4, 400}, {NOTE_D4, 400}, {NOTE_D4, 400},
-  {NOTE_C4, 400}, {NOTE_C4, 400}, {NOTE_B3, 800},
-
-  // "Now I know my ABCs"
-  {NOTE_E4, 400}, {NOTE_E4, 400}, {NOTE_B4, 400}, {NOTE_B4, 400},
-  {NOTE_C5, 400}, {NOTE_C5, 400}, {NOTE_B4, 800},
-
-  // "Next time won't you sing with me"
-  {NOTE_A4, 400}, {NOTE_A4, 400}, {NOTE_G4, 400}, {NOTE_G4, 400},
-  {NOTE_F4, 400}, {NOTE_F4, 400}, {NOTE_E4, 800}
-};
-
-const LyricTiming abcLyricTimings[] PROGMEM = {
-  // "A B C D E F G"
-  {"A", 0}, {"B", 1}, {"C", 2}, {"D", 3}, {"E", 4}, {"F", 5}, {"G", 6},
-
-  // "H I J K L M N"
-  {"H", 7}, {"I", 8}, {"J", 9}, {"K", 10}, {"L", 11}, {"M", 12}, {"N", 13},
-
-  // "O P Q R S"
-  {"O", 14}, {"P", 15}, {"Q", 16}, {"R", 17}, {"S", 18},
-
-  // "T U V"
-  {"T", 19}, {"U", 20}, {"V", 21},
-
-  // "W X Y and Z"
-  {"W", 22}, {"X", 23}, {"Y", 24}, {"and", 25}, {"Z", 26},
-
-  // "Now I know my ABCs"
-  {"Now", 27}, {"I", 28}, {"know", 29}, {"my", 30}, {"A", 31}, {"B", 32}, {"Cs", 33},
-
-  // "Next time won't you sing with me"
-  {"Next", 34}, {"time", 35}, {"won't", 36}, {"you", 37}, {"sing", 38}, {"with", 39}, {"me", 40}
-};
-
-// Song 4: Mary Had a Little Lamb
-
+// Song 3: Mary Had a Little Lamb
 const Note maryMelody[] PROGMEM = {
   // Verse 1
   {NOTE_E4, 400}, {NOTE_D4, 400}, {NOTE_C4, 400}, {NOTE_D4, 400},
@@ -334,18 +252,13 @@ const Note maryHarmony[] PROGMEM = {
 
 // Lyrics timings: word and index of melody note start
 const LyricTiming maryLyricTimings[] PROGMEM = {
-  {"Mary", 0}, {"had", 1}, {"a", 2}, {"little", 3},
-  {"lamb,", 4}, {"little", 5}, {"lamb,", 6},
-  
-  {"Little", 7}, {"lamb,", 8}, {"its", 9},
-  
-  {"Fleece", 10}, {"was", 11}, {"white", 12},
-  
-  {"As", 13}, {"snow.", 14}, {"Everywhere", 15}, {"that", 16},
-  {"Mary", 17}, {"went,", 18}, {"went,", 19},
-  
-  {"Mary", 20}, {"went,", 21}, {"the", 22}, {"lamb", 23}
+  {"Mary", 0}, {"had", 2}, {"a", 3}, {"little", 4}, {"lamb,", 6},
+  {"little", 7}, {"lamb,", 9},
+  {"Its", 10}, {"fleece", 11}, {"was", 12},
+  {"white", 13}, {"as", 14}, {"snow.", 15},
+  {"Everywhere", 16}, {"that", 17}, {"Mary", 18}, {"went,", 20}, {"the", 22}, {"lamb", 23}
 };
+
 
 
 // Song management variables
@@ -373,12 +286,6 @@ const Song songs[] PROGMEM = {
     "Jingle Bells"
   },
   {
-    abcMelody, sizeof(abcMelody) / sizeof(abcMelody[0]),
-    abcHarmony, sizeof(abcHarmony) / sizeof(abcHarmony[0]),
-    abcLyricTimings, sizeof(abcLyricTimings) / sizeof(abcLyricTimings[0]),
-    "ABC Song"
-  },
-  {
     maryMelody, sizeof(maryMelody) / sizeof(maryMelody[0]),
     maryHarmony, sizeof(maryHarmony) / sizeof(maryHarmony[0]),
     maryLyricTimings, sizeof(maryLyricTimings) / sizeof(maryLyricTimings[0]),
@@ -391,8 +298,8 @@ const int SONG_COUNT = sizeof(songs) / sizeof(songs[0]);
 int currentSong = 0;
 bool autoPlay = false;
 bool ledsEnabled = true;
-int currentLEDPattern = 0;
-const int LED_PATTERN_COUNT = 6;
+int currentLEDPattern = 3;
+const int LED_PATTERN_COUNT = 4;
 
 bool userStopped = false; // Track if user manually stopped/paused
 bool waitingForPlayAgain = false; // Track if we're waiting for play again response
@@ -406,7 +313,7 @@ unsigned long lastSerialCheck = 0;
 const unsigned long SERIAL_CHECK_INTERVAL = 100; // Check serial every 100ms
 
 // Pattern
-String patternNames[] = {"Frequency Bands", "Beat Pulse", "Rainbow Chase", "VU Meter", "Disco Strobe", "Sequential Notes"};
+String patternNames[] = {"Rainbow Chase", "Sequential Notes", "Note Mapping", "Random Notes"};
 
 void setup() {
   // Initialize Serial for commands
@@ -416,13 +323,12 @@ void setup() {
   Serial.println("Commands:");
   Serial.println("  play <song_number> - Play specific song (0-" + String(SONG_COUNT-1) + ")");
   Serial.println("  stop - Stop current playback");
-  Serial.println("  pause - Pause/resume playback");
   Serial.println("  list - List all available songs");
   Serial.println("  auto on/off - Enable/disable auto-play");
   Serial.println("  led on/off - Enable/disable LEDs");
-  Serial.println("  pattern <0-4> - Change LED pattern");
+  Serial.println("  pattern <0-3> - Change LED pattern");
   Serial.println("  status - Show current status");
-  Serial.println("  yes/y - PlaYy song again (when prompted)");
+  Serial.println("  yes/y - Play song again (when prompted)");
   Serial.println("  no/n - Skip to next song (when prompted)");
   Serial.println("  help - Show this help menu");
   Serial.println();
@@ -438,7 +344,7 @@ void setup() {
   // Setup LEDs
   buzzer.setupLEDs(LED_RED_PIN, LED_BLUE_PIN, LED_GREEN_PIN, LED_YELLOW_PIN, LED_WHITE_PIN);
   buzzer.enableLEDs(ledsEnabled);
-  buzzer.setLEDPattern(PATTERN_SEQUENTIAL_NOTES);
+  buzzer.setLEDPattern(PATTERN_RANDOM_NOTES);
 
   // Play startup sequence with chime and animation
   playStartupSequence();
@@ -587,20 +493,6 @@ void processCommand(String command) {
     lcd.print("Stopped");
     Serial.println("Playback stopped.");
     
-  } else if (command == "pause") {
-    if (buzzer.isPlaying()) {
-      buzzer.stop();
-      userStopped = true;  // Mark as user-initiated pause
-      waitingForPlayAgain = false;  // Cancel any play again prompt
-      lcd.clear();
-      lcd.print("Paused");
-      Serial.println("Playback paused.");
-    } else {
-      buzzer.play();
-      userStopped = false;  // Resume normal operation
-      Serial.println("Playback resumed.");
-    }
-    
   } else if (command == "list") {
     Serial.println("Available songs:");
     for (int i = 0; i < SONG_COUNT; i++) {
@@ -640,7 +532,7 @@ void processCommand(String command) {
     
     if (pattern < 0 || pattern >= LED_PATTERN_COUNT) {
       Serial.println("ERROR: Invalid pattern number. Use 0-" + String(LED_PATTERN_COUNT-1));
-      Serial.println("Patterns: 0=Frequency Bands, 1=Beat Pulse, 2=Rainbow Chase, 3=VU Meter, 4=Disco Strobe, 5=Sequential Notes");
+      Serial.println("Patterns: 0=Rainbow Chase, 1=Sequential, 2= Note Mapping, 3=Random Notes");
       return;
     }
     
@@ -653,12 +545,10 @@ void processCommand(String command) {
     // Handle "pattern" without parameters
     Serial.println("Which LED pattern would you like?");
     Serial.println("Available patterns:");
-    Serial.println("  0: Frequency Bands");
-    Serial.println("  1: Beat Pulse");
-    Serial.println("  2: Rainbow Chase");
-    Serial.println("  3: VU Meter");
-    Serial.println("  4: Disco Strobe");
-    Serial.println("  5: Sequential Notes");
+    Serial.println("  0: Rainbow Chase");
+    Serial.println("  1: Sequential Notes");
+    Serial.println("  2: Note Mapping");
+    Serial.println("  3: Random Notes");
     Serial.println("Current pattern: " + String(patternNames[currentLEDPattern]));
     Serial.println("Usage: pattern <pattern_number>");
 
@@ -668,11 +558,10 @@ void processCommand(String command) {
     Serial.println("=== Commands ===");
     Serial.println("play <song_number> - Play specific song (0-" + String(SONG_COUNT-1) + ")");
     Serial.println("stop - Stop current playback");
-    Serial.println("pause - Pause/resume playback");
     Serial.println("list - List all available songs");
     Serial.println("auto on/off - Enable/disable auto-play");
     Serial.println("led on/off - Enable/disable LEDs");
-    Serial.println("pattern <0-4> - Change LED pattern");
+    Serial.println("pattern <0-3> - Change LED pattern");
     Serial.println("status - Show current status");
     Serial.println("yes/y - Play song again (when prompted)");
     Serial.println("no/n - Skip to next song (when prompted)");
@@ -770,12 +659,12 @@ void playStartupSequence() {
   // Use the new synchronized function
   buzzer.playSequenceWithLEDs(startupChime, chimeLength, MELODY_BUZZER_PIN);
   
-  // Final flourish - all LEDs flash
+  // All LEDs flash
   if (lcdAvailable) {
     for (int i = 0; i < 3; i++) {
       buzzer.setLEDColor(255, 255, 255, 255, 255);  // All on
       delay(100);
-      buzzer.setLEDColor(0, 0, 0, 0, 0);            // All off
+      buzzer.setLEDColor(0, 0, 0, 0, 0); // All off
       delay(100);
     }
   }
@@ -784,176 +673,4 @@ void playStartupSequence() {
   if (lcdAvailable) {
     lcd.clear();
   }
-}
-
-void playStartupSequence1() {
-  // Play startup chime
-  int chimeLength = sizeof(startupChime) / sizeof(startupChime[0]);
-  
-  // Welcome animation - Phase 1: Building text
-  lcd.clear();
-  String welcomeText = "Karokee Machine";
-  String authorText = "by Elliott S :)";
-  
-  // Typewriter effect for welcome text
-  for (int i = 0; i <= welcomeText.length(); i++) {
-    lcd.setCursor(0, 0);
-    lcd.print(welcomeText.substring(0, i));
-    
-    // Add blinking cursor effect
-    if (i < welcomeText.length()) {
-      lcd.print("_");
-    }
-    delay(100);
-  }
-  
-  delay(300);
-  
-  // Typewriter effect for author text
-  for (int i = 0; i <= authorText.length(); i++) {
-    lcd.setCursor(0, 1);
-    lcd.print(authorText.substring(0, i));
-    
-    if (i < authorText.length()) {
-      lcd.print("_");
-    }
-    delay(100);
-  }
-  
-  delay(500);
-  
-  // Phase 2: Play chime with visual effects
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("  Initializing  ");
-  
-  // Play chime notes with LCD animation
-  for (int i = 0; i < chimeLength; i++) {
-    Note currentNote;
-    memcpy_P(&currentNote, &startupChime[i], sizeof(Note));
-    
-    // Play the note
-    tone(MELODY_BUZZER_PIN, currentNote.frequency);
-    
-    // Create visual effect based on note
-    String visualBar = "";
-    int barLength = map(currentNote.frequency, 200, 1000, 1, LCD_COLS);
-    barLength = constrain(barLength, 1, LCD_COLS);
-    
-    // Create animated bar
-    for (int j = 0; j < LCD_COLS; j++) {
-      if (j < barLength) {
-        if (j == barLength - 1) {
-          visualBar += ">";
-        } else {
-          visualBar += "=";
-        }
-      } else {
-        visualBar += " ";
-      }
-    }
-    
-    lcd.setCursor(0, 1);
-    lcd.print(visualBar);
-    
-    delay(currentNote.duration);
-    noTone(MELODY_BUZZER_PIN);
-    
-    // Brief pause between notes
-    delay(50);
-  }
-  
-  // Phase 3: Loading animation with complete visual bar
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Loading Songs...");
-  
-  // Create a complete loading bar that fills up
-  for (int progress = 0; progress <= LCD_COLS; progress++) {
-    String loadingBar = "";
-    
-    // Build the loading bar
-    for (int j = 0; j < LCD_COLS; j++) {
-      if (j < progress) {
-        loadingBar += "=";
-      } else if (j == progress && progress < LCD_COLS) {
-        loadingBar += ">";
-      } else {
-        loadingBar += " ";
-      }
-    }
-    
-    lcd.setCursor(0, 1);
-    lcd.print(loadingBar);
-    delay(150);
-  }
-  
-  // Show complete bar for a moment
-  lcd.setCursor(0, 1);
-  String completeBar = "";
-  for (int i = 0; i < LCD_COLS; i++) {
-    completeBar += "=";
-  }
-  lcd.print(completeBar);
-  delay(500);
-  
-  // Phase 4: Success message
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("    Ready!    ");
-  lcd.setCursor(0, 1);
-  lcd.print("Songs: " + String(SONG_COUNT) + " loaded");
-  
-  // Cool LED wave effect instead of simultaneous flash
-  if (ledsEnabled) {
-    // Wave effect - chase across LEDs
-    for (int wave = 0; wave < 3; wave++) {
-      // Forward wave
-      for (int led = 0; led < 5; led++) {
-        buzzer.setLEDColor(0, 0, 0, 0, 0); // All off first
-        
-        // Light up current LED with bright color
-        switch (led) {
-          case 0: buzzer.setLEDColor(255, 0, 0, 0, 0); break; // Red
-          case 1: buzzer.setLEDColor(0, 255, 0, 0, 0); break; // Green  
-          case 2: buzzer.setLEDColor(0, 0, 255, 0, 0); break; // Blue
-          case 3: buzzer.setLEDColor(0, 0, 0, 255, 0); break; // LED 4
-          case 4: buzzer.setLEDColor(0, 0, 0, 0, 255); break; // LED 5
-        }
-        delay(80);
-      }
-      
-      // Backward wave
-      for (int led = 4; led >= 0; led--) {
-        buzzer.setLEDColor(0, 0, 0, 0, 0); // All off first
-        
-        // Light up current LED with different color
-        switch (led) {
-          case 0: buzzer.setLEDColor(0, 255, 255, 0, 0); break;
-          case 1: buzzer.setLEDColor(0, 0, 255, 255, 0); break;
-          case 2: buzzer.setLEDColor(0, 0, 0, 255, 255); break;
-          case 3: buzzer.setLEDColor(255, 0, 0, 0, 255); break;
-          case 4: buzzer.setLEDColor(255, 255, 0, 0, 0); break;
-        }
-        delay(80);
-      }
-    }
-    
-    // Final rainbow flash
-    buzzer.setLEDColor(255, 128, 0, 255, 128); // Rainbow colors
-    delay(200);
-    buzzer.setLEDColor(0, 0, 0, 0, 0); // All off
-  } else {
-    delay(1000); // If LEDs disabled, just wait
-  }
-  
-  delay(500);
-  
-  // Final startup complete message
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("System Ready!");
-  lcd.setCursor(0, 1);
-  lcd.print("Type 'help'");
-  delay(1500);
 }
