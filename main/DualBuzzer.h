@@ -105,6 +105,9 @@ private:
     bool isIdleMode;
     unsigned long lastIdleUpdate;
 
+    // Gap between notes in milliseconds for articulation
+    const int noteGap = 50;  
+
 public:
     // Constructor
     DualBuzzer(int melodyBuzzerPin, int harmonyBuzzerPin);

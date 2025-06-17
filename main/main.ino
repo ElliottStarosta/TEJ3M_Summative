@@ -1,11 +1,4 @@
 /**
- * @file main.ino
- * @brief Main Arduino sketch for dual buzzer music player with LED effects
- * 
- * @details This sketch implements a musical playback system using two buzzers
- * for melody and harmony, with synchronized LED effects and LCD display for
- * lyrics. It includes multiple songs and visual patterns.
- * 
  * @author Elliott Starosta
  * @date June 16, 2025
  */
