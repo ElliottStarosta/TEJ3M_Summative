@@ -38,12 +38,10 @@ struct LEDConfig {
  * @brief Enumeration of available LED light show patterns
  */
 enum LEDPattern {
-    PATTERN_FREQUENCY_BANDS,    // Colors based on frequency ranges
-    PATTERN_BEAT_PULSE,         // LEDs pulse with beat intensity
-    PATTERN_RAINBOW_CHASE,      // Continuous color cycling
-    PATTERN_VU_METER,           // Visual music volume/frequency
-    PATTERN_DISCO_STROBE,       // Strobe effect with music
-    PATTERN_SEQUENTIAL_NOTES    // Sequential LED activation
+    PATTERN_RAINBOW_CHASE,       // Continuous color cycling
+    PATTERN_SEQUENTIAL_NOTES,    // Sequential LED activation
+    PATTERN_NOTE_MAPPING,        // Map each note to an LED based on freq
+    PATTERN_RANDOM_NOTES         // Random led
 };
 
 /**
@@ -89,16 +87,20 @@ private:
     unsigned long lastLEDUpdate;
     int ledUpdateInterval;
     int patternStep;
-    int beatCounter;
     int lastMelodyFreq;
     int lastHarmonyFreq;
     unsigned long noteChangeTime;
     bool noteJustChanged;
+    int lastMelodyIndex;
+    int lastHarmonyIndex;
 
     // LED effects
     int currentIntensity;
     bool strobeState;
     unsigned long lastStrobeTime;
+
+    int lastRandomLED;
+    bool firstRandomNote;
 
     // Idle mode
     int idleAnimationStep;
@@ -144,6 +146,7 @@ public:
     void setLEDColor(int red, int green, int blue, int yellow, int white);
     void lightLEDForNote(int freq);
     void playSequenceWithLEDs(const Note* sequence, int length, int buzzerPin);
+    
 
     // Idle mode
     void startIdleMode();
@@ -155,16 +158,13 @@ private:
 
     // LED pattern implementations
     void updateLEDs();
-    void applyFrequencyBands();
-    void applyBeatPulse();
     void applyRainbowChase();
-    void applyVUMeter();
-    void applyDiscoStrobe();
     void applySequentialNotes();
-    
+    void applyRandomNotes();
+    void applyNoteMapping();
+    void mapFrequencyToLED(int frequency, bool fullBrightness);
+
     // LED utilities
-    int getFrequencyBand(int frequency);
-    int mapFrequencyToIntensity(int frequency);
     void showIdleLCD();
 };
 
