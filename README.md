@@ -20,19 +20,17 @@ The LCD display features scrolling lyrics with a custom right-to-left scrolling 
 ### LED Light Show (6 Patterns)
 The system offers six distinct LED visualization patterns:
 
-1. **Frequency Bands** - LEDs respond to note frequencies
-2. **Beat Pulse** - Synchronized pulsing with rhythm  
-3. **Rainbow Chase** - Colorful sequential LED chasing
-4. **VU Meter** - Volume/intensity visualization
-5. **Disco Strobe** - High-energy flashing patterns
-6. **Sequential Notes** - LEDs light up with individual notes
+
+1. **Rainbow Chase** - Colorful sequential LED chasing
+2. **Note Mapping** - LEDS that are mapped to different notes"
+3. **Random Notes** -- LEDS play randoming after each note
 
 ### Serial Command Interface
 Complete control via USB serial connection with over 15 commands for playback control, system settings, information queries, and interactive responses.
 
 #### Playback Control
 ```
-play <0-3>     - Play specific song by number
+play <0-2>     - Play specific song by number
 stop           - Stop current playback
 pause          - Pause/resume playback
 ```
@@ -41,7 +39,7 @@ pause          - Pause/resume playback
 ```
 auto on/off    - Enable/disable continuous auto-play
 led on/off     - Enable/disable LED light show
-pattern <0-5>  - Change LED visualization pattern
+pattern <0-3>  - Change LED visualization pattern
 ```
 
 #### Information Commands
@@ -119,8 +117,7 @@ Open the Serial Monitor at 9600 baud rate. Type "help" to see all available comm
 Available songs:
   0: Twinkle Little Star
   1: Jingle Bells
-  2: ABC Song
-  3: Mary Had a Little Lamb
+  2: Mary Had a Little Lamb
 
 > play 1
 Playing: Jingle Bells
@@ -132,7 +129,7 @@ Playing: Jingle Bells
 LEDs enabled.
 
 > pattern 2
-LED pattern set to: Rainbow Chase
+LED pattern set to: Note Mapping
 
 > auto on
 Auto-play enabled.
@@ -160,16 +157,11 @@ The project demonstrates several key programming concepts including conditional 
 |---|------------|----------|
 | 0 | Twinkle Twinkle Little Star | ~45s |
 | 1 | Jingle Bells | ~35s |
-| 2 | ABC Song | ~30s |
-| 3 | Mary Had a Little Lamb | ~25s |
+| 2 | Mary Had a Little Lamb | ~25s |
 
 ### Adding New Songs
 To add new songs, define melody and harmony note arrays in PROGMEM, create lyric timing arrays with word synchronization, add to the songs[] array structure, and update the SONG_COUNT variable.
 
-## LED Patterns Explained
-
-### Pattern Details
-Pattern 0 (Frequency Bands) varies LED brightness with note pitch. Pattern 1 (Beat Pulse) pulses all LEDs together with the rhythm. Pattern 2 (Rainbow Chase) cycles colors sequentially across LEDs. Pattern 3 (VU Meter) progressively activates LEDs like an audio meter. Pattern 4 (Disco Strobe) creates high-energy random flashing. Pattern 5 (Sequential Notes) lights individual LEDs for each note played.
 
 ## Troubleshooting
 
